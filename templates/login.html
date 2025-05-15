@@ -18,6 +18,11 @@
 {% endif %}
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script defer data-domain="showcase.2i2c.cloud" src="https://plausible.io/js/script.js"></script>
+{% endblock %}
+
 {% block script %}
 {% if custom.redirect_to %}
 <script>
@@ -45,7 +50,6 @@
 {% else %}
 {{ super() }}
 <script src="{{ static_url('extra-assets/js/login.js') }}"></script>
-<script defer data-domain="showcase.2i2c.cloud" src="https://plausible.io/js/script.js"></script>
 {% endif %}
 {% endblock %}
 
