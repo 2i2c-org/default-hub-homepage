@@ -5,16 +5,50 @@
 {% endblock %}
 
 {% block stylesheet %}
+{% if custom.redirect_to %}
+<style>
+/* Hide the default modal that shows up in the JupyterHub home page */
+.fade {
+  display: none;
+}
+</style>
+{% else %}
 {{ super() }}
 <link rel="stylesheet" href="{{ static_url('extra-assets/css/login.css') }}" type="text/css"/>
+{% endif %}
 {% endblock %}
 
 {% block script %}
+{% if custom.redirect_to %}
+<script>
+    // This code must be run *as early as possible*, as we care about redirecting the user
+    // *somewhere* immediately. So this isn't wrapped in a window.onload or similar, but bare.
+    // This code is also loaded directly in <head>, so it will block page load.
+    const curUrl = new URL(document.location);
+    // if next query param is presentm just do nothing
+    const nextUrl = curUrl.searchParams.get('next');
+    // /hub/ being next should be treated same as no next present
+    if (!nextUrl || nextUrl === "/hub/") {
+        // The 'unified' home page for all the hubs is elsewhere
+        // so anyone landing on the home page should just be redirected.
+        window.location.replace({{custom.redirect_to|tojson}});
+    } else {
+        // The user has landed on this page, which means they are not actually logged in,
+        // and need to login to continue to wherever they are going. So let's construct the
+        // appropriate oauth_login URL for them to go to.
+        let oauthLoginUrl = new URL(document.location);
+        // Pass along all url parameters we got, just change from /login to /oauth_login
+        oauthLoginUrl.pathname = "/oauth_login";
+        window.location.replace(oauthLoginUrl);
+    }
+</script>
+{% else %}
 {{ super() }}
-<script src="{{ static_url('extra-assets/js/login.js') }}"></script>
+{% endif %}
 {% endblock %}
 
 {% block main %}
+{% if not custom.redirect_to %}
 <div class="container login-header" id="home" data-authenticator-login-url="{{authenticator_login_url}}">
   <div class="text-center">
     <p class="hub-login-text">El JupyterHub-2i2c para <a href="{{ custom.org.url }}" class="text-decoration-none" > {{ custom.org.name }}</a></p><br />
@@ -43,26 +77,22 @@
   </div>
   </div>
   <div class="login-container text-center">
-    {% if "interface_selector" in custom and custom["interface_selector"] and (not next or next == "%2Fhub%2F") %}
-    <a role="button" id="login-button" class='btn btn-jupyter btn-lg' href='{{authenticator_login_url}}'>
-      Log in para comenzar
-    </a>
-    {% else %}
-    <a role="button" class='btn btn-jupyter btn-lg' href='{{authenticator_login_url}}'>
-      Log in para continuar
-    </a>
-    {% endif %}
+    <div id="login-main" class="container">
+      {% block login_container %}
+      {{ super() }}
+      {% endblock %}
+    </div>
   </div>
 
   <div class="row col-md-8 mx-auto details">
     <div class="col-md-6">
       <big class="details-welcome lead">
-        ¡Bienvenida/o al <strong>JupyterHub-2i2c</strong> de <a href="{{ custom.org.url }}" class="text-decoration-none">{{ custom.org.name }}</a> 
+        ¡Bienvenida/o al <strong>JupyterHub-2i2c</strong> de <a href="{{ custom.org.url }}" class="text-decoration-none">{{ custom.org.name }}</a>
         para los eventos de Octubre-Noviembre 2024! Estos eventos son patrocinados
         por <a href="https://intercoonecta.aecid.es/" class="text-decoration-none">AECID-Intercoonecta</a> y <a href="https://www.csic.es/es" class="text-decoration-none">CSIC</a>.
         <br />
         Esta plataforma da acceso a entornos de <strong>Python utilizando JupyterLab</strong> y de <strong>R utilizando RStudio</strong>.
-        El interfaz de JupyterLab inicialmente aparecerá en Inglés por defecto. Para cambiarlo al español, ver las 
+        El interfaz de JupyterLab inicialmente aparecerá en Inglés por defecto. Para cambiarlo al español, ver las
         <a href="https://github.com/Intercoonecta/Aula-invertida/blob/main/Intro-a-Jupyter/jupyter-tutorial.md#cambiar-el-interfaz-al-espa%C3%B1ol" class="text-decoration-none">instrucciones que hemos desarrollado</a>.
       </big>
       <br />
@@ -78,12 +108,12 @@
     <div class="col-md-6 details-logos">
       <big class="details-welcome lead">
         Welcome to the <strong>OceanHackWeek 2i2c JupyterHub!</strong> From October to November 2024,
-        this hub will prioritize support for two events by the <a href="{{ custom.org.url }}" class="text-decoration-none">{{ custom.org.name }}</a> group 
-        taking place, October 15-18 and November 25-29. 
+        this hub will prioritize support for two events by the <a href="{{ custom.org.url }}" class="text-decoration-none">{{ custom.org.name }}</a> group
+        taking place, October 15-18 and November 25-29.
         This is a virtual program fully in Spanish serving participants from throughout Latin America.
         <br>
         <br>
-        <em>If you still have access through a previous <a href="https://oceanhackweek.org" class="text-decoration-none">OceanHackWeek</a> event and are not participating in this event, please use this hub lightly.</em> 
+        <em>If you still have access through a previous <a href="https://oceanhackweek.org" class="text-decoration-none">OceanHackWeek</a> event and are not participating in this event, please use this hub lightly.</em>
       </big>
       <br>
       <br>
@@ -174,4 +204,5 @@
       </p>
   </div>
 </div>
+{% endif %}
 {% endblock %}

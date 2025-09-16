@@ -23,6 +23,7 @@ c.JupyterHub.authenticator_class = GenericOAuthenticator
 # Variables that are passed through to templates!
 c.JupyterHub.template_vars = {
     'custom': {
+        "redirect_to": None,
         "interface_selector": True,
         "default_url": "/rstudio",
         'org': {
