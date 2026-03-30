@@ -44,30 +44,19 @@
   </div>
   <div class="login-container text-center">
     {% if "interface_selector" in custom and custom["interface_selector"] and (not next or next == "%2Fhub%2F") %}
-    <form class="form-inline">
-      <div class="form-group interface-selector">
-        <label>After logging in, open: </label>
-        <label class="radio-inline">
-          <input type="radio" name="interface" value="tree"
-                 {% if "default_url" not in custom or custom["default_url"] == "/tree" %}
-                 checked
-                 {% endif %}
-                 >Jupyter Notebook
-        </label>
-        <label class="radio-inline">
-          <input type="radio" name="interface" value="rstudio"
-                 {% if "default_url" in custom and custom["default_url"] == "/rstudio" %}
-                 checked
-                 {% endif %}
-                 >RStudio
-        </label>
-        <label class="radio-inline">
-          <input type="radio" name="interface" value="lab"
-                 {% if "default_url" in custom and custom["default_url"] == "/lab" %}
-                 checked
-                 {% endif %}
-                 >JupyterLab
-        </label>
+    <form>
+      <div class="mb-3">
+        <label class="form-label">After logging in, open:</label>
+        <div class="form-check form-check-inline form-switch">
+          <input class="form-check-input" type="radio" name="interface" value="tree"
+                  {% if "default_url" not in custom or custom["default_url"] == "/tree" %}checked{% endif %} />
+          <label class="form-check-label">Jupyter Notebook</label>
+        </div>
+        <div class="form-check form-check-inline form-switch">
+          <input class="form-check-input" type="radio" name="interface" value="lab"
+                  {% if "default_url" in custom and custom["default_url"] == "/lab" %}checked{% endif %} />
+          <label class="form-check-label">JupyterLab</label>
+        </div>
       </div>
     </form>
     <a role="button" id="login-button" class='btn btn-jupyter btn-lg' href='{{authenticator_login_url}}'>
@@ -89,7 +78,8 @@
       <br />
       VICTOR, or Volcanology Infrastructure for Computational Tools and Resources (VICTOR), is a pilot service running on open source infrastructure.
       It is designed for for use by the volcano science community, providing a standard environment and set of tools for all users.
-    </div>
+
+	</div>
     <div class="col-md-6 details-logos">
       <div class="pull-right">
         <a href="https://jupyter.org">
@@ -119,9 +109,23 @@
     <div>
       <h4>Where can I learn more?</h4>
 
-      The <a href="https://victor.ldeo.columbia.edu">VICTOR Website</a> provides important information about
-      the platform and our goals, as well as notifications about workshops and other events. For documentation
-      on the JupyterHub and custom scripts, please reference <a href="https://victor.readthedocs.io"> documentation page</a>. 
+      {% if custom.learn_more is defined %}
+        {{ custom.learn_more | safe }}
+      {% else %}
+        The <a href="https://victor.ldeo.columbia.edu" class="text-decoration-none">VICTOR Website</a> provides important information about
+        the platform and our goals, as well as notifications about workshops and other events. For documentation
+        on the JupyterHub and custom scripts, please reference <a href="https://victor.readthedocs.io" class="text-decoration-none"> documentation page</a>. 
+      {% endif %}
+    </div>
+
+    <div>
+      <h4>What should I know about the platform?</h4>
+
+      VICTOR currently has dozens of models and tools across the solid-earth sciences and beyond. In order to start exploring,
+      we recommend running the <code>victor setup</code> command. This will provide you a list of options. Enter the number corresponding
+      to the tool and a folder will appear in your home directory containing all the files you will need to run it, including bespoke Jupyter
+      Notebooks to guide you through the process. We recommend that only <b>highly technical</b> users experiment outside of these workflows.
+
     </div>
 
     <div>
@@ -134,15 +138,6 @@
       activities.
     </div>
 
-    <div>
-      <h4>What is a Jupyter Notebook?</h4>
-
-      <a href="https://jupyter.org">Jupyter Notebook</a> is an open-source web application that allows you to create and
-      share documents that contain live code, equations, visualizations and narrative
-      text. Uses include: data cleaning and transformation, numerical simulation,
-      statistical modeling, data visualization, machine learning, and much more.
-
-    </div>
 
     <div>
       <h4>What is JupyterHub?</h4>
