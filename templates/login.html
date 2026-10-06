@@ -77,7 +77,7 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Operated by</h4>
+          <h5 class="card-title">Operated by</h5>
           <p class="card-text">{{ attribution(custom.operated_by) }}</p>
         </div>
       </div>
@@ -85,7 +85,7 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Funded by</h4>
+          <h5 class="card-title">Funded by</h5>
           {%- if custom.funded_by is mapping %} {#- Single mapping for funders
           #}
           <p class="card-text">{{ attribution(custom.funded_by) }}</p>
@@ -103,7 +103,7 @@
     <div class="col">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Designed by</h4>
+          <h5 class="card-title">Designed by</h5>
           <p class="card-text">{{ attribution(custom.designed_by) }}</p>
         </div>
       </div>
