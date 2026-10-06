@@ -14,7 +14,6 @@
     margin-top: 32px;
 }
 #operated-by {
-    margin-top: 8px;
     color: darkgrey;
 }
 
@@ -90,7 +89,8 @@ p.hub-login-text {
 }
 
 div.login-header img.hub-logo {
-    width: 40%;
+    max-width: 100%;
+    max-height: 12rem;
 }
 
 ul.funded-by-list {
